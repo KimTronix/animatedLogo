@@ -131,14 +131,14 @@ export default function App() {
                     useNativeDriver: true,
                 }),
                 Animated.timing(triangleMoveX, {
-                    toValue: -32, // Tighter: -32 instead of -55
+                    toValue: -48, // Shifted Left for better centering
                     duration: 1000,
                     easing: Easing.bezier(0.2, 0, 0, 1),
                     useNativeDriver: true,
                 }),
                 // Move "OK" to right
                 Animated.timing(okMoveX, {
-                    toValue: 38, // Tighter: 38 instead of 55
+                    toValue: 24, // Shifted Left (was 38)
                     duration: 1000,
                     easing: Easing.bezier(0.2, 0, 0, 1),
                     useNativeDriver: true,
@@ -285,7 +285,6 @@ export default function App() {
                                 </Text>
                             </AnimatedView>
 
-                            {/* 3b. "A" Text appearing over the triangle */}
                             <AnimatedView
                                 style={[
                                     StyleSheet.absoluteFill,
@@ -294,20 +293,22 @@ export default function App() {
                                         justifyContent: 'center',
                                         opacity: aOpacity,
                                         transform: [
-                                            { translateX: -32 }, // Matches triangleMoveX target roughly
+                                            { translateX: -48 },  // Matches triangleMoveX target
                                             // { translateY: 0 } // Already centered
                                         ]
                                     }
                                 ]}
                                 pointerEvents="none"
                             >
-                                <Text style={{
-                                    color: '#9B111E',
-                                    fontSize: 80,
-                                    fontWeight: 'bold',
-                                }}>
-                                    A
-                                </Text>
+                                <Svg width="55" height="55" viewBox="0 0 70 70">
+                                    <Path
+                                        d="M35 5 L65 60 L5 60 Z"
+                                        fill="#9B111E"
+                                        stroke="#9B111E"
+                                        strokeWidth="8"
+                                        strokeLinejoin="round"
+                                    />
+                                </Svg>
                             </AnimatedView>
 
                             {/* 4. Subtitle */}
