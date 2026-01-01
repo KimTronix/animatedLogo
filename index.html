@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AOK Logo Animation - Ruby Red</title>
+    <style>
+        /* Modern CSS Reset & Variables */
+        :root {
+            --ruby-red: #9B111E;
+            --ruby-light: #D11D27;
+            --white: #FFFFFF;
+            --black: #000000;
+            --transition-speed: 0.8s;
+        }
+
+        body {
+            background-color: var(--black);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            cursor: pointer;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* SVG Logo Styling */
+        #aok-logo {
+            width: 280px;
+            height: 280px;
+            overflow: visible;
+        }
+
+        /* 1. The Outer Circle (Ruby Red) */
+        .circle-path {
+            fill: none;
+            stroke: var(--ruby-red);
+            stroke-width: 4;
+            stroke-dasharray: 630;
+            stroke-dashoffset: 630;
+            animation: drawCircle 2s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+        }
+
+        @keyframes drawCircle {
+            to { stroke-dashoffset: 0; }
+        }
+
+        /* 2. The Rotating Play Button (Ruby Red) */
+        .play-button-wrapper {
+            transform-box: fill-box;
+            transform-origin: 100px 100px;
+            animation: orbit 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            opacity: 0;
+        }
+
+        .play-button {
+            fill: var(--ruby-red);
+            filter: drop-shadow(0 0 5px rgba(155, 17, 30, 0.5));
+        }
+
+        @keyframes orbit {
+            0% {
+                transform: rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            100% {
+                transform: rotate(360deg);
+                opacity: 1;
+            }
+        }
+
+        /* 3. The 'OK' Construction (Ruby Red) */
+        .ok-text {
+            font-size: 50px;
+            font-weight: 800;
+            fill: transparent;
+            stroke: var(--ruby-red);
+            stroke-width: 1.5;
+            stroke-dasharray: 400;
+            stroke-dashoffset: 400;
+            text-anchor: middle;
+            dominant-baseline: middle;
+            letter-spacing: 2px;
+            animation: buildOK 2s ease-out 2.5s forwards;
+        }
+
+        @keyframes buildOK {
+            0% {
+                stroke-dashoffset: 400;
+                fill: transparent;
+            }
+            70% {
+                stroke-dashoffset: 0;
+                fill: transparent;
+            }
+            100% {
+                stroke-dashoffset: 0;
+                fill: var(--ruby-red);
+            }
+        }
+
+        /* 4. Subtitle: Act Of Kindness (Ruby Red) */
+        .subtitle {
+            margin-top: 40px;
+            color: var(--ruby-red);
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            font-weight: 300;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: revealSubtitle 1.5s ease-out 4s forwards;
+        }
+
+        @keyframes revealSubtitle {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Interaction Overlay */
+        #audio-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            color: var(--ruby-red);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        /* Replay Button for Testing */
+        .replay-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: transparent;
+            border: 1px solid var(--ruby-red);
+            color: var(--ruby-red);
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 12px;
+            transition: all 0.3s;
+            z-index: 50;
+        }
+
+        .replay-btn:hover {
+            background: var(--ruby-red);
+            color: var(--black);
+        }
+    </style>
+</head>
+<body>
+    <div id="audio-overlay">Tap to Experience AOK</div>
+
+    <div class="container">
+        <svg id="aok-logo" viewBox="0 0 200 200">
+            <!-- Main Circle -->
+            <circle class="circle-path" cx="100" cy="100" r="90" />
+
+            <!-- Play Button Group (orbits the circle) -->
+            <g class="play-button-wrapper">
+                <!-- Triangle positioned at the top of the circle -->
+                <path class="play-button" d="M100,2 L112,18 L88,18 Z" transform="translate(0, -5)" />
+            </g>
+
+            <!-- Central 'OK' -->
+            <text x="100" y="105" class="ok-text">OK</text>
+        </svg>
+
+        <div class="subtitle">Act Of Kindness</div>
+    </div>
+
+    <button class="replay-btn" onclick="location.reload()">Replay Animation</button>
+
+    <script>
+        const overlay = document.getElementById('audio-overlay');
+
+        overlay.addEventListener('click', () => {
+            overlay.style.display = 'none';
+            playAOKSound();
+        });
+
+        function playAOKSound() {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+            const playUniformBass = (time, freq, attackDur, holdDur, fadeDur, volume) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                const filter = audioCtx.createBiquadFilter();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, time);
+
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(80, time);
+
+                const peakTime = time + attackDur;
+                const fadeStartTime = peakTime + holdDur;
+                const endTime = fadeStartTime + fadeDur;
+
+                gain.gain.setValueAtTime(0, time);
+                gain.gain.linearRampToValueAtTime(volume, peakTime);
+                gain.gain.setValueAtTime(volume, fadeStartTime);
+                gain.gain.linearRampToValueAtTime(0, endTime);
+
+                osc.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start(time);
+                osc.stop(endTime + 0.1);
+            };
+
+            const now = audioCtx.currentTime;
+
+            // Total Duration: 0.5s fade-in + 1.5s hold + 1.0s fade-out = 3 seconds
+            playUniformBass(now, 43.65, 0.5, 1.5, 1.0, 0.6);
+        }
+    </script>
+</body>
+</html>
