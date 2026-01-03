@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity, Animated, Easing, Dimensions 
 import { Play, RotateCcw } from 'lucide-react-native';
 import Svg, { Circle, Path, G, Text as SvgText } from 'react-native-svg';
 import { StatusBar } from 'expo-status-bar';
+import { useRouter } from 'expo-router';
 
 // Create Animated components for SVG
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -16,6 +17,7 @@ const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * CIRCLE_RADIUS; // ~942
 
 export default function App() {
     const [isStarted, setIsStarted] = useState(false);
+    const router = useRouter();
 
     // Animation Values
     const circleProgress = useRef(new Animated.Value(0)).current; // 0 to 1
@@ -225,10 +227,8 @@ export default function App() {
 
                                 {/* 1.5 Ghost Play Button (Static at Top, Initially Hidden Offscreen) */}
                                 <AnimatedG
-                                    style={{
-                                        opacity: ghostOpacity,
-                                        transform: [{ translateY: ghostY }]
-                                    }}
+                                    opacity={ghostOpacity}
+                                    transform={[{ translateY: ghostY }]}
                                 >
                                     <Path
                                         d="M200,32 L212,50 L188,50 Z"
@@ -238,20 +238,16 @@ export default function App() {
 
                                 {/* 2. The Orbiting Play Button */}
                                 <AnimatedG
-                                    style={{
-                                        transform: [
-                                            { translateX: 200 },
-                                            { translateY: 200 },
-                                            { rotate: rotation },
-                                            { translateX: -200 },
-                                            { translateY: -200 },
-                                            // New Move for Formation
-                                            { translateX: triangleMoveX },
-                                            { translateY: triangleMoveY }
-                                        ],
-                                        // Fade out triangle as A fades in
-                                        opacity: Animated.subtract(orbitOpacity, aOpacity)
-                                    }}
+                                    opacity={Animated.subtract(orbitOpacity, aOpacity)}
+                                    transform={[
+                                        { translateX: 200 },
+                                        { translateY: 200 },
+                                        { rotate: rotation },
+                                        { translateX: -200 },
+                                        { translateY: -200 },
+                                        { translateX: triangleMoveX },
+                                        { translateY: triangleMoveY }
+                                    ]}
                                 >
                                     <Path
                                         d="M200,32 L212,50 L188,50 Z"
@@ -317,11 +313,27 @@ export default function App() {
                                     styles.subtitleContainer,
                                     {
                                         opacity: subtitleOpacity,
-                                        transform: [{ translateY: subtitleTranslateY }]
+                                        transform: [{ translateY: subtitleTranslateY }],
+                                        alignItems: 'center',
                                     }
                                 ]}
                             >
                                 <Text style={styles.subtitle}>ACT OF KINDNESS</Text>
+
+                                <TouchableOpacity
+                                    style={{
+                                        marginTop: 30,
+                                        backgroundColor: '#9B111E',
+                                        paddingHorizontal: 30,
+                                        paddingVertical: 12,
+                                        borderRadius: 25,
+                                        borderWidth: 1,
+                                        borderColor: 'rgba(255,255,255,0.2)',
+                                    }}
+                                    onPress={() => router.push('/home' as any)}
+                                >
+                                    <Text style={{ color: '#FFF', fontWeight: 'bold' }}>ENTER DASHBOARD</Text>
+                                </TouchableOpacity>
                             </AnimatedView>
                         </View>
                     )}
@@ -336,7 +348,7 @@ export default function App() {
                     </View>
                 )}
             </View>
-        </View>
+        </View >
     );
 }
 
